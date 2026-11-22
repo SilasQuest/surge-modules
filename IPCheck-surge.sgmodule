@@ -1,0 +1,18 @@
+#!name=IP 质检
+#!desc=双源 IP 质检（Net.Coffee + IPFinal），请先在参数内选择策略组。
+#!category=网络检测
+#!arguments=Proxy:DIRECT,MarkIP:false,Source:双源
+#!arguments-desc=Proxy: 选择策略组,默认DIRECT | MarkIP: IP 打码(true/false),默认 false | Source: 数据源(双源/Net.Coffee/IPFinal),默认双源
+
+[Rule]
+# 脚本自身数据源：内联兜底，规则集未就绪时脚本仍走选定策略
+DOMAIN-SUFFIX,ip.net.coffee,{{{Proxy}}}
+DOMAIN-SUFFIX,ipfinal.com,{{{Proxy}}}
+# 其余 IP 检测站点的分流清单
+RULE-SET,https://raw.githubusercontent.com/Likhixang/Egerny/main/rules/IPCheck.list,{{{Proxy}}}
+
+[Panel]
+IPCheck = script-name=IPCheck, title=IP 质检, content=刷新中…, style=info, update-interval=300
+
+[Script]
+IPCheck = type=generic, timeout=20, argument={{{MarkIP}}};{{{Source}}}, script-path=https://cdn.jsdelivr.net/gh/SilasQuest/surge-modules@main/IPCheck-surge.js
